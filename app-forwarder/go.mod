@@ -1,4 +1,4 @@
-module github.com/binxio/pubsub-emulator/app-forwarder
+module github.com/binxio/google-pubsub-testbench/app-forwarder
 
 go 1.14
 

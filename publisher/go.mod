@@ -1,4 +1,4 @@
-module github.com/binxio/pubsub-emulator/publisher
+module github.com/binxio/google-pubsub-testbench/publisher
 
 go 1.14
 

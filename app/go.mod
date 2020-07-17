@@ -1,3 +1,3 @@
-module github.com/binxio/pubsub-emulator/app
+module github.com/binxio/google-pubsub-testbench/app
 
 go 1.14
