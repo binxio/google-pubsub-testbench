@@ -67,13 +67,13 @@ func Forward(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := topic.Publish(ctx, &pubsub.Message{Data: js})
-	server, err := result.Get(ctx)
+	messageId, err := result.Get(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	fmt.Fprintf(w, "message sent to %s", server)
+	fmt.Fprintf(w, "message sent, assigned message id %s\n", messageId)
 }
 
