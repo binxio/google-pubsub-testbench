@@ -3,4 +3,5 @@
 app/app
 app-forwarder/app-forwarder
 publisher/publisher
-
+terraform_modules/secrets/
+.autohidefiles
