@@ -3,14 +3,14 @@ steps:
     entrypoint: '/bin/sh'
     args:
       - -c
-      - 'docker build -t gcr.io/cloudrun/hello:$SHORT_SHA . &&
+      - 'docker build -t gcr.io/cloudrun/hello:$SHORT_SHA -f app-interface.dockerfile &&
          docker tag gcr.io/$PROJECT_ID/app-interface:$SHORT_SHA gcr.io/$PROJECT_ID/app-interface:$TAG_NAME &&
          docker tag gcr.io/$PROJECT_ID/app-interface:$SHORT_SHA gcr.io/$PROJECT_ID/app-interface:latest'
   - name: docker
     entrypoint: '/bin/sh'
     args:
       - -c
-      - 'docker build -t gcr.io/cloudrun/hello:$SHORT_SHA . &&
+      - 'docker build -t gcr.io/cloudrun/hello:$SHORT_SHA -f data-processor.dockerfile &&
          docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:$TAG_NAME &&
          docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:latest'
 images:
