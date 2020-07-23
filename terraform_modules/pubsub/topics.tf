@@ -10,9 +10,8 @@ resource "google_pubsub_topic" "topic" {
 
 ##### publishers #####
 
-# would it be better to make policies out of these?
 resource "google_pubsub_topic_iam_member" "publisher" {
-  member     = "serviceAccount:${var.api-email}"
+  member     = "serviceAccount:${var.app-forwarder-email}"
   topic      = "projects/${var.project-id}/topics/${var.topic["name"]}"
   role       = "roles/pubsub.publisher"
   depends_on = [google_pubsub_topic.topic]

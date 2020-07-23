@@ -1,9 +1,9 @@
 variable "instance-name" {
-  type = string
+  default = "data-processor"
 }
 
 variable "container-image-uri" {
-  type = string
+  default = "gcr.io/cloudrun/hello"
 }
 
 variable "location" {

@@ -2,7 +2,7 @@
 
 # functional #
 
-variable "api-email" {
+variable "app-forwarder-email" {
   type = string
 }
 
