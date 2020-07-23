@@ -1,0 +1,30 @@
+##### TODO #####
+
+Make
+  clean Makefile
+  1. create env file in makefile,
+    2. then load from env file in terraform
+
+CICD
+  add precommit rule to make graph
+
+Functional
+  add firewall to cloud run from specific IP addresses in env file (start with one). Currently no auth.
+
+Terraform
+  + separate terraform concerns into multiple files
+  connect resources (e.g. service account) via variables. Use output?
+  make it so that a new topic can easily be added, along with pubs and subs, by changing a variable
+
+
+
+
+
+
+##### Questions #####
+
+Makefile:
+  How do I prevent $$(...) from also executing the output/return. OR: How can I make $() work?
+
+Functional
+  Why can't I destroy the pubsub api?

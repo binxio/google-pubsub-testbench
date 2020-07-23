@@ -4,8 +4,12 @@ app/app
 app-forwarder/app-forwarder
 publisher/publisher
 terraform_modules/secrets/
-terraform_modules/terraform_google_pubsub/.terraform
-terraform_modules/terraform_google_pubsub/terraform.tfstate
-terraform_modules/terraform_google_pubsub/terraform.tfstate.backup
+*.terraform
+*.tfstate
+*.tfstate.backup
 trash/
 .autohidefiles
+.DS_Store
+*.BAK
+setup_project.sh
+terraform.env
