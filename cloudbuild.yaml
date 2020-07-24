@@ -16,5 +16,5 @@ steps:
          docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:$TAG_NAME &&
          docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:latest'
 images:
-- gcr.io/$PROJECT_ID/pubsub-testbench/app-forwarder
-- gcr.io/$PROJECT_ID/pubsub-testbench/data-processor
+- gcr.io/speeltuin-teindevries/$PROJECT_ID/app-forwarder
+- gcr.io/speeltuin-teindevries/$PROJECT_ID/data-processor
