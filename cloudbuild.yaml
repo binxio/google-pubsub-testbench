@@ -1,3 +1,4 @@
+# requires gcr-trigger on git tag
 steps:
   - name: docker
     entrypoint: '/bin/sh'
@@ -9,7 +10,7 @@ steps:
          docker tag gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA gcr.io/$PROJECT_ID/app-forwarder:latest'
   - name: docker
     entrypoint: '/bin/sh'
-    dir: 'data_processor'
+    dir: 'data-processor'
     args:
       - -c
       - 'docker build -t gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA . &&
