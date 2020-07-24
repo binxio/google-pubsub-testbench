@@ -7,6 +7,16 @@ import (
 	"os"
 )
 
+// PubSubMessage is the payload of a Pub/Sub event.
+type PubSubMessage struct {
+        Message struct {
+                Data []byte `json:"data,omitempty"`
+                ID   string `json:"id"`
+        } `json:"message"`
+        Subscription string `json:"subscription"`
+}
+2
+
 func Echo(w http.ResponseWriter, r *http.Request) {
 	var body interface{}
 
