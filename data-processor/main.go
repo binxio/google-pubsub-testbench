@@ -15,7 +15,7 @@ type PubSubMessage struct {
         } `json:"message"`
         Subscription string `json:"subscription"`
 }
-2
+
 
 func Echo(w http.ResponseWriter, r *http.Request) {
 	var body interface{}

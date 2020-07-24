@@ -1,8 +1,8 @@
 version: "3.3"
 services:
-  app:
+  data-processor:
     build:
-      context: app
+      context: data-processor
   app-forwarder:
     build:
       context: app-forwarder
