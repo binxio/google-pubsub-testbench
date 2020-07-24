@@ -1,6 +1,6 @@
 steps:
   - name: docker
-    # entrypoint: '/bin/sh'
+    entrypoint: '/bin/sh'
     dir: 'temporary_fast_building_dockerfile_for_experimentation'
     args:
       - -c
