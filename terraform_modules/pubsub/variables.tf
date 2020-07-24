@@ -1,7 +1,7 @@
 ##### input variables #####
 
 # functional #
-
+#TODO anonymize these variables into lists of subscribers, publishers, etc
 variable "app-forwarder-email" {
   type = string
 }
@@ -18,16 +18,4 @@ variable "project-id" {
 
 variable "location" {
   type = string
-}
-
-##### normal variables (that can be declared here, closer to the resource) #####
-
-variable "topic" {
-  default = {
-    name      = "request-topic"
-    publisher = ["publisher-1"]
-    subscriptions = {
-      subscription-1 = ["subscriber-1"]
-    }
-  }
 }

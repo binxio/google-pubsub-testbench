@@ -7,20 +7,6 @@ import (
 	"os"
 )
 
-
-
-func main() {
-	port := os.Getenv("8080")
-	if port == "" {
-		port = "8080"
-	}
-	http.HandleFunc("/", Echo)
-	err := http.ListenAndServe("0.0.0.0:" + port, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func Echo(w http.ResponseWriter, r *http.Request) {
 	var body interface{}
 
@@ -39,4 +25,17 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
+}
+
+
+func main() {
+	port := os.Getenv("8080")
+	if port == "" {
+		port = "8080"
+	}
+	http.HandleFunc("/", Echo)
+	err := http.ListenAndServe("0.0.0.0:" + port, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
