@@ -12,6 +12,10 @@ variable "data-processor-email" {
 
 # project #
 
+variable "user-account" {
+  type = string
+}
+
 variable "project-id" {
   type = string
 }

@@ -3,7 +3,8 @@ variable "instance-name" {
 }
 
 variable "container-image-uri" {
-  default = "gcr.io/cloudrun/hello"
+  default = "gcr.io/speeltuin-teindevries/app-forwarder"
+  # default = "gcr.io/cloudrun/hello"
 }
 
 variable "location" {

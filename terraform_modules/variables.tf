@@ -13,6 +13,10 @@ variable "location" {
   default = "europe-west4"
 }
 
+variable "user-account" {
+  default = "teindevries@binx.io"
+}
+
 ##### provider #####
 provider "google" {
   # get this from env?

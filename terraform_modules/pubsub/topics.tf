@@ -49,7 +49,7 @@ resource "google_pubsub_topic_iam_member" "request-publisher" {
   depends_on = [google_pubsub_topic.request-topic]
 }
 
-# subscriptions #
+# subscriptions and their subscribers #
 
 resource "google_pubsub_subscription" "request-subscription" {
   name       = "request-subscription"
@@ -62,7 +62,7 @@ resource "google_pubsub_subscription_iam_member" "request-subscriber" {
   subscription = google_pubsub_subscription.request-subscription.name
   role         = "roles/pubsub.subscriber"
   member       = "serviceAccount:${var.data-processor-email}"
-  depends_on   = [google_pubsub_topic.request-topic]
+  depends_on   = [google_pubsub_subscription.response-subscription]
 }
 
 
@@ -84,4 +84,20 @@ resource "google_pubsub_topic_iam_member" "response-publisher" {
   topic      = google_pubsub_topic.response-topic.id
   role       = "roles/pubsub.publisher"
   depends_on = [google_pubsub_topic.response-topic]
+}
+
+# subscriptions and their subscribers #
+
+resource "google_pubsub_subscription" "response-subscription" {
+  name       = "response-subscription"
+  topic      = google_pubsub_topic.response-topic.id
+  project    = var.project-id
+  depends_on = [google_pubsub_topic.response-topic]
+}
+
+resource "google_pubsub_subscription_iam_member" "response-subscriber" {
+  subscription = google_pubsub_subscription.response-subscription.name
+  role         = "roles/pubsub.subscriber"
+  member       = "user:${var.user-account}"
+  depends_on   = [google_pubsub_subscription.response-subscription]
 }
