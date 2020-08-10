@@ -3,12 +3,15 @@ services:
   data-processor:
     build:
       context: data-processor
+    environment:
+      - PORT=8080
   app-forwarder:
     build:
       context: app-forwarder
     environment:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - REQUEST_TOPIC_ID=request-topic
+      - PORT=8080
     ports:
       - 8080:8080
   publisher:
