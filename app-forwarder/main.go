@@ -1,77 +1,55 @@
 package main
 
 import (
-	"bytes"
 	"cloud.google.com/go/pubsub"
+	"encoding/json"
 	"context"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	// "github.com/davecgh/go-spew/spew"
 )
 
-func Forwarder(ctx context.Context, m *pubsub.Message) {
-	log.Printf("sending %d bytes\n", len(m.Data))
-	r, err := http.Post("http://app:8080", "application/json", bytes.NewBuffer(m.Data))
+type MinimalPubSubMessage struct {
+	Text string
+}
 
-	if err == nil && r.StatusCode == 200 {
-		m.Ack()
-	} else {
-		if err != nil {
-			log.Printf("failed to delivery message, %s\n", err)
-		} else {
-			log.Printf("application returned %d\n", r.StatusCode)
+//TODO not DRY: repetition across scripts, don't yet know how to modularize in Go.
+func handle(e error, w http.ResponseWriter, errorType string) {
+	if e != nil {
+    switch errorType {
+	    case "400":
+	      http.Error(w, e.Error(), http.StatusBadRequest)
+			case "500":
+				http.Error(w, e.Error(), http.StatusInternalServerError)
 		}
-		m.Nack()
 	}
+}
+
+func publish(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	switch method := r.Method; method{
+		case http.MethodPost:
+			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
+
+			topicName := os.Getenv("REQUEST_TOPIC_ID")
+			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
+			client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
+
+			log.Printf("somehow (smirk) published: %s\n", msg.Text)
+		default:
+			w.WriteHeader(http.StatusBadRequest)
+	}
+
 }
 
 func main() {
-	var err error
-	var topic *pubsub.Topic
-	var subscription *pubsub.Subscription
+	port := os.Getenv("PORT")
 
-	ctx := context.Background()
-	project := os.Getenv("PUBSUB_PROJECT_ID")
-	client, err := pubsub.NewClient(ctx, project)
+	http.HandleFunc("/", publish)
+	log.Printf("start to listen port port %s\n", port)
+	err := http.ListenAndServe(":" + port, nil)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
-	}
-
-	topic, err = client.CreateTopic(ctx, "my-topic");
-	if err != nil && !strings.Contains(err.Error(), "AlreadyExists") {
-		log.Fatalf("Failed to create topic: %v", err)
-	} else {
-		topic = client.TopicInProject("my-topic", project)
-		err = nil
-	}
-	defer topic.Stop();
-
-	subscription, err = client.CreateSubscription(context.Background(), "my-topic-app-forwarder",
-		pubsub.SubscriptionConfig{Topic: topic})
-	if err != nil && !strings.Contains(err.Error(), "AlreadyExists") {
-		log.Fatalf("failed to create subscription: %s", err)
-	} else {
-		subscription = client.SubscriptionInProject("my-topic-app-forwarder", project)
-		err = nil
-	}
-	err = subscription.Receive(ctx, Forwarder)
-	if err != nil {
-		log.Fatalf("receive failed, %s", err)
-	}
-
-
-
-	body, err := ioutil.ReadAll(os.Stdin); if err == nil {
-		result := topic.Publish(ctx, &pubsub.Message{Data: body})
-		server, err := result.Get(ctx); if err == nil {
-			fmt.Printf("message sent to %s", server)
-		}
-	}
-	if err != nil {
-		log.Fatal("failed to publish message, %s", err)
+		log.Fatal(err)
 	}
 }
-

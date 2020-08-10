@@ -1,7 +1,7 @@
 ##### specify #####
-variable "CREDENTIALS_KEY_PATH" {
-  type = string
-}
+# variable "CREDENTIALS_KEY_PATH" {
+#   type = string
+# }
 
 ##### project #####
 
@@ -20,7 +20,7 @@ variable "user-account" {
 ##### provider #####
 provider "google" {
   # get this from env?
-  credentials = var.CREDENTIALS_KEY_PATH
-  project     = "speeltuin-teindevries"
-  region      = var.location
+  # credentials = var.CREDENTIALS_KEY_PATH
+  project = "speeltuin-teindevries"
+  region  = var.location
 }

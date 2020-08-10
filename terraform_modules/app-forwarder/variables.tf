@@ -1,3 +1,9 @@
+
+
+variable "request-topic-name" {
+  default = "request-topic"
+}
+
 variable "instance-name" {
   default = "app-forwarder"
 }

@@ -3,6 +3,7 @@
 *.tfstate.backup
 *.iml
 *.BAK
+backup*
 .idea/
 .autohidefiles
 .DS_Store
