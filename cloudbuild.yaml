@@ -5,8 +5,9 @@ steps:
     id: app-forwarder-build
     waitFor: ['-']
     # entrypoint: '/bin/sh'
-    dir: 'app-forwarder'
+    # dir: 'app-forwarder'
     args:
+      - --dockerfile=app-forwarder/Dockerfile
       - --destination=gcr.io/$PROJECT_ID/app-forwarder
       - --cache=true
       - --cache-ttl=12h
