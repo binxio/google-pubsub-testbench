@@ -19,7 +19,7 @@ steps:
     entrypoint: gcloud
     args: ['run', 'deploy', 'app-forwarder', '--image', 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA', '--region', 'europe-west4', '--platform', 'managed']
 
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: docker #'gcr.io/kaniko-project/executor:latest'
     id: data-processor-build
     waitFor: ['-']
     entrypoint: '/bin/sh'
