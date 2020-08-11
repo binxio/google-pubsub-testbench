@@ -22,8 +22,9 @@ steps:
       - 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA'
       - '--region'
       - 'europe-west4'
-      - '--platform managed'
-      
+      - '--platform'
+      - 'managed'
+
   - name: docker
     id: data-processor-build
     waitFor: ['-']
@@ -45,7 +46,8 @@ steps:
       - 'gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA'
       - '--region'
       - 'europe-west4'
-      - '--platform managed'
+      - '--platform'
+      - 'managed'
 
 images:
 - gcr.io/$PROJECT_ID/app-forwarder
