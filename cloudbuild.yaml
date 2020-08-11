@@ -16,8 +16,17 @@ steps:
       - -c
       - 'docker build -t gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA . &&
          docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:$TAG_NAME &&
-         docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:latest &&
-         gcloud run deploy data-processor --image gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA --region europe-west4 --platform managed'
+         docker tag gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA gcr.io/$PROJECT_ID/data-processor:latest'
+  - name: cloudrun
+    entrypoint: 'gcloud'
+    dir: 'app-forwarder'
+    args:
+      - 'run deploy app-forwarder --image gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA --region europe-west4 --platform managed'
+  - name: cloudrun
+    entrypoint: 'gcloud'
+    dir: 'data-processor'
+    args:
+      - 'run deploy data-processor --image gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA --region europe-west4 --platform managed'
 images:
 - gcr.io/$PROJECT_ID/app-forwarder
 - gcr.io/$PROJECT_ID/data-processor
