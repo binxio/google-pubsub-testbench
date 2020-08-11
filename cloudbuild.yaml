@@ -15,7 +15,7 @@ steps:
     waitFor: [app-forwarder-build]
     entrypoint: gcloud
     args:
-      - 'run deploy app-forwarder --image gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA --region europe-west4 --platform managed'
+      - ['run', 'deploy', 'app-forwarder', '--image', 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA', '--region', 'europe-west4', '--platform managed']
 
   - name: docker
     id: data-processor-build
@@ -31,7 +31,7 @@ steps:
     waitFor: [data-processor-build]
     entrypoint: gcloud
     args:
-      - 'run deploy data-processor --image gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA --region europe-west4 --platform managed'
+      - ['run', 'deploy', 'data-processor', '--image', 'gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA', '--region', 'europe-west4', '--platform managed']
 
 images:
 - gcr.io/$PROJECT_ID/app-forwarder
