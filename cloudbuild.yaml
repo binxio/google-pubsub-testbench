@@ -9,11 +9,11 @@ steps:
     args:
       - --destination=gcr.io/$PROJECT_ID/app-forwarder
       - --cache=true
-      # - -c
-      - ['docker', 'build', '-t', 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA', '.']
-      - ['docker', 'tag', 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA', 'gcr.io/$PROJECT_ID/app-forwarder:$TAG_NAME']
-      - ['docker', 'tag' 'gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA' 'gcr.io/$PROJECT_ID/app-forwarder:latest']
-      - ['docker', 'push', 'gcr.io/$PROJECT_ID/app-forwarder']
+      - -c
+      - 'docker build -t gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA . &&
+         docker tag gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA gcr.io/$PROJECT_ID/app-forwarder:$TAG_NAME &&
+         docker tag gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA gcr.io/$PROJECT_ID/app-forwarder:latest &&
+         docker push gcr.io/$PROJECT_ID/app-forwarder'
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     waitFor: [app-forwarder-build]
     entrypoint: gcloud
