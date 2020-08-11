@@ -10,6 +10,7 @@ backup*
 app/app
 app-forwarder/app-forwarder
 publisher/publisher
+cicd/
 terraform_modules/secrets/
 trash/
 setup_project.sh
