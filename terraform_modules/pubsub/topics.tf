@@ -70,6 +70,13 @@ resource "google_pubsub_subscription_iam_member" "data-processing-request-subscr
   depends_on   = [google_pubsub_subscription.response-subscription]
 }
 
+# resource "google_pubsub_subscription_iam_member" "data-processing-request-pusher" {
+#   subscription = google_pubsub_subscription.data-processing-request-subscription.name
+#   role         = "roles/run.invoker"
+#   member       = "serviceAccount:${var.data-processor-email}"
+#   depends_on   = [google_pubsub_subscription.response-subscription]
+# }
+
 
 #                                          #
 #####          response topic          #####

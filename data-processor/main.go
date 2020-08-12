@@ -15,6 +15,7 @@ func handle(e error, w http.ResponseWriter, errorType string) {
 			case "500":
 				http.Error(w, e.Error(), http.StatusInternalServerError)
 		}
+		panic(e)
 	}
 }
 

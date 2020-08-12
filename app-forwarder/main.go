@@ -23,6 +23,7 @@ func handle(e error, w http.ResponseWriter, errorType string) {
 			case "500":
 				http.Error(w, e.Error(), http.StatusInternalServerError)
 		}
+		panic(e)Åå
 	}
 }
 
@@ -34,9 +35,10 @@ func publish(w http.ResponseWriter, r *http.Request) {
 
 			topicName := os.Getenv("DATA_PROCESSING_TOPIC_ID")
 			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
-			client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
-
-			log.Printf("somehow (smirk) published: %s\n", msg.Text)
+			log.Printf("trying to publish: %s\n", msg.Text)
+			res := client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
+			serverID, err := res.Get(); handle(err, w, "500")
+			log.Printf("result: %s\n", serverID)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 	}
