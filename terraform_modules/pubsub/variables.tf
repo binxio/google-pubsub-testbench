@@ -10,6 +10,10 @@ variable "data-processor-email" {
   type = string
 }
 
+variable "data-processor-url" {
+  type = string
+}
+
 # project #
 
 variable "user-account" {

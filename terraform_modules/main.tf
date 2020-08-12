@@ -14,6 +14,7 @@ module "pubsub" {
 
   app-forwarder-email  = module.app-forwarder.email
   data-processor-email = module.data-processor.email
+  data-processor-url   = module.data-processor.url
 
   user-account = var.user-account
   location     = var.location

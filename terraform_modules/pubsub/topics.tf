@@ -30,36 +30,41 @@ resource "google_service_account" "pubsub" {
 
 
 #                                          #
-#####          request topic           #####
+#####          data-processing-request topic           #####
 #                                          #
 
 
-resource "google_pubsub_topic" "request-topic" {
-  name       = "request-topic"
+resource "google_pubsub_topic" "data-processing-request-topic" {
+  name       = "data-processing-request-topic"
   project    = var.project-id
   depends_on = [google_project_service.pubsub-service]
 }
 
 # publishers #
 
-resource "google_pubsub_topic_iam_member" "request-publisher" {
+resource "google_pubsub_topic_iam_member" "data-processing-request-publisher" {
   member     = "serviceAccount:${var.app-forwarder-email}"
-  topic      = google_pubsub_topic.request-topic.id
+  topic      = google_pubsub_topic.data-processing-request-topic.id
   role       = "roles/pubsub.publisher"
-  depends_on = [google_pubsub_topic.request-topic]
+  depends_on = [google_pubsub_topic.data-processing-request-topic]
 }
 
 # subscriptions and their subscribers #
 
-resource "google_pubsub_subscription" "request-subscription" {
-  name       = "request-subscription"
-  topic      = google_pubsub_topic.request-topic.id
-  project    = var.project-id
-  depends_on = [google_pubsub_topic.request-topic]
+resource "google_pubsub_subscription" "data-processing-request-subscription" {
+  name    = "data-processing-request-subscription"
+  topic   = google_pubsub_topic.data-processing-request-topic.id
+  project = var.project-id
+
+  push_config {
+    push_endpoint = var.data-processor-url
+  }
+
+  depends_on = [google_pubsub_topic.data-processing-request-topic]
 }
 
-resource "google_pubsub_subscription_iam_member" "request-subscriber" {
-  subscription = google_pubsub_subscription.request-subscription.name
+resource "google_pubsub_subscription_iam_member" "data-processing-request-subscriber" {
+  subscription = google_pubsub_subscription.data-processing-request-subscription.name
   role         = "roles/pubsub.subscriber"
   member       = "serviceAccount:${var.data-processor-email}"
   depends_on   = [google_pubsub_subscription.response-subscription]
