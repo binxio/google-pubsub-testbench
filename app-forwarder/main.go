@@ -32,7 +32,7 @@ func publish(w http.ResponseWriter, r *http.Request) {
 		case http.MethodPost:
 			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
 
-			topicName := os.Getenv("REQUEST_TOPIC_ID")
+			topicName := os.Getenv("DATA_PROCESSING_TOPIC_ID")
 			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
 			client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
 

@@ -27,8 +27,8 @@ resource "google_cloud_run_service" "app-forwarder" {
       containers {
         image = var.container-image-uri
         env {
-          name  = "REQUEST_TOPIC_ID"
-          value = "request-topic"
+          name  = "DATA_PROCESSING_TOPIC_ID"
+          value = "data-processing-request-subscription"
         }
       }
       service_account_name = google_service_account.app-forwarder.email
