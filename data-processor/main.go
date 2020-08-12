@@ -19,7 +19,7 @@ func handle(e error, w http.ResponseWriter, errorType string) {
 }
 
 
-func Echo(w http.ResponseWriter, r *http.Request) {
+func echo(w http.ResponseWriter, r *http.Request) {
 	var body interface{}
 
 	err := json.NewDecoder(r.Body).Decode(&body); handle(err, w, "400")
@@ -35,8 +35,9 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 func main() {
 	port := os.Getenv("PORT")
 
-	http.HandleFunc("/", Echo)
-	err := http.ListenAndServe("0.0.0.0:" + port, nil)
+	http.HandleFunc("/", echo)
+	log.Printf("start to listen port port %s\n", port)
+	err := http.ListenAndServe(":" + port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
