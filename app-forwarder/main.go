@@ -34,6 +34,7 @@ func publish(w http.ResponseWriter, r *http.Request) {
 			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
 
 			topicName := os.Getenv("DATA_PROCESSING_TOPIC_ID")
+			log.Printf("topic: %s\n", DATA_PROCESSING_TOPIC_ID)
 			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
 			log.Printf("trying to publish: %s\n", msg.Text)
 			res := client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
