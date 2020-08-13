@@ -5,7 +5,7 @@ steps:
     waitFor: ['-']
     dir: 'app-forwarder'
     args:
-      - --dockerfile=app-forwarder/Dockerfile
+      - --dockerfile=Dockerfile
       - --destination=gcr.io/$PROJECT_ID/app-forwarder
       - --cache=true
       - --context=.
