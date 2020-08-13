@@ -25,10 +25,10 @@ COPY . .
 # Build the app
 #TODO could use: -ldflags="-X 'package_path.variable_name=development'" ##### to find the path, use: go tool nm . | grep variable_name
 #also: -ldflags '-extldflags "-static"' . ##### ?
-# RUN go build -o /go/bin/app
+RUN go build -o /go/bin/app
 # # A new stage: reset the container image
-# FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static:nonroot
 # # Copy app from previous stage
-# COPY --from=builder /go/bin/app /go/bin/app
+COPY --from=builder /go/bin/app /go/bin/app
 # # Set the default command to run when you start the container
 ENTRYPOINT ["/go/bin/app"]
