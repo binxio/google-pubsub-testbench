@@ -41,6 +41,6 @@ steps:
   #   entrypoint: gcloud
   #   args: ['run', 'deploy', 'data-processor', '--image', 'gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA', '--region', 'europe-west4', '--platform', 'managed']
 
-images:
-- gcr.io/$PROJECT_ID/app-forwarder
-- gcr.io/$PROJECT_ID/data-processor
+# images:
+# - gcr.io/$PROJECT_ID/app-forwarder
+# - gcr.io/$PROJECT_ID/data-processor
