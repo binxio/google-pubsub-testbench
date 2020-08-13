@@ -6,7 +6,7 @@ steps:
     dir: 'app-forwarder'
     args:
       - --dockerfile=Dockerfile
-      - --destination=gcr.io/$PROJECT_ID/app-forwarder
+      - --destination=gcr.io/$PROJECT_ID/app-forwarder:$SHORT_SHA
       - --cache=true
       - --context=.
       - --cache-ttl=24h
@@ -21,7 +21,7 @@ steps:
     dir: 'data-processor'
     args:
       - --dockerfile=Dockerfile
-      - --destination=gcr.io/$PROJECT_ID/data-processor
+      - --destination=gcr.io/$PROJECT_ID/data-processor:$SHORT_SHA
       - --cache=true
       - --context=.
       - --cache-ttl=24h
