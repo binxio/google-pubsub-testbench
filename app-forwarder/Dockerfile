@@ -31,4 +31,4 @@ COPY . .
 # # Copy app from previous stage
 # COPY --from=builder /go/bin/app /go/bin/app
 # # Set the default command to run when you start the container
-# ENTRYPOINT ["/go/bin/app"]
+ENTRYPOINT ["/go/bin/app"]
