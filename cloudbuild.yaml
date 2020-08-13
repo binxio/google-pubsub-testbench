@@ -3,12 +3,12 @@ steps:
   - name: 'gcr.io/kaniko-project/executor:latest'
     id: app-forwarder-build
     waitFor: ['-']
-    dir: 'app-forwarder'
+    # dir: 'app-forwarder'
     args:
-      - --dockerfile=Dockerfile
+      - --dockerfile=app-forwarder/Dockerfile
       - --destination=gcr.io/$PROJECT_ID/app-forwarder
       - --cache=true
-      - --context=.
+      - --context=app-forwarder/
       - --cache-ttl=12h
 
   # - name: docker
