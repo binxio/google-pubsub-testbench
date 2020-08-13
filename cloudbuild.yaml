@@ -3,13 +3,26 @@ steps:
   - name: 'gcr.io/kaniko-project/executor:latest'
     id: app-forwarder-build
     waitFor: ['-']
-    # dir: 'app-forwarder'
+    dir: 'app-forwarder'
     args:
-      - --dockerfile=app-forwarder/Dockerfile
+      - --dockerfile=Dockerfile
       - --destination=gcr.io/$PROJECT_ID/app-forwarder
       - --cache=true
-      - --context=app-forwarder/
+      - --context=.
       - --cache-ttl=12h
+
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    id: data-processor-build
+    waitFor: ['-']
+    dir: 'data-processor'
+    args:
+      - --dockerfile=Dockerfile
+      - --destination=gcr.io/$PROJECT_ID/data-processor
+      - --cache=true
+      - --context=.
+      - --cache-ttl=12h
+
+
 
   # - name: docker
   #   id: app-forwarder-build
