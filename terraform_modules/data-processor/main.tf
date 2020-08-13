@@ -24,6 +24,9 @@ resource "google_cloud_run_service" "data-processor" {
     percent         = 100
     latest_revision = true
   }
+
+  autogenerate_revision_name = true
+
   depends_on = [google_project_service.run, google_service_account.data-processor]
 }
 

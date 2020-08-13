@@ -21,7 +21,7 @@ ENV CGO_ENABLED 0
 # Set the working directory for next instructions
 WORKDIR /go/src/app
 # Pull in all the local files
-COPY . .
+COPY . /go/src/app
 # Build the app
 #TODO could use: -ldflags="-X 'package_path.variable_name=development'" ##### to find the path, use: go tool nm . | grep variable_name
 #also: -ldflags '-extldflags "-static"' . ##### ?
