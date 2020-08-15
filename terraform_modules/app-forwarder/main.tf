@@ -7,13 +7,32 @@ resource "google_project_service" "run" {
 
 ##### ingress access #####
 
-resource "google_cloud_run_service_iam_member" "app-forwarder-invoker" {
+#TODO why does below not work to give unrestricted access?
+
+# resource "google_cloud_run_service_iam_member" "app-forwarder-invoker" {
+#   location = google_cloud_run_service.app-forwarder.location
+#   # project  = google_cloud_run_service.default.project
+#   service    = google_cloud_run_service.app-forwarder.name
+#   role       = "roles/run.invoker"
+#   member     = "allUsers"
+#   depends_on = [google_cloud_run_service.app-forwarder]
+# }
+
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "noauth" {
   location = google_cloud_run_service.app-forwarder.location
-  # project  = google_cloud_run_service.default.project
-  service    = google_cloud_run_service.app-forwarder.name
-  role       = "roles/run.invoker"
-  member     = "allUsers"
-  depends_on = [google_cloud_run_service.app-forwarder]
+  project  = google_cloud_run_service.app-forwarder.project
+  service  = google_cloud_run_service.app-forwarder.name
+
+  policy_data = data.google_iam_policy.noauth.policy_data
 }
 
 ##### instance #####
@@ -27,7 +46,7 @@ resource "google_cloud_run_service" "app-forwarder" {
       containers {
         image = var.container-image-uri
         env {
-          name  = "DATA_PROCESSING_TOPIC_ID"
+          name  = "DATA_PROCESSING_REQUEST_TOPIC_ID"
           value = "data-processing-request-topic"
         }
       }

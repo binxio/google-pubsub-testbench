@@ -5,6 +5,25 @@ resource "google_project_service" "run" {
   disable_on_destroy = false
 }
 
+#TODO remove: temporarily set permission to all
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  location = google_cloud_run_service.data-processor.location
+  project  = google_cloud_run_service.data-processor.project
+  service  = google_cloud_run_service.data-processor.name
+
+  policy_data = data.google_iam_policy.noauth.policy_data
+}
+
+
 ##### instance #####
 
 resource "google_cloud_run_service" "data-processor" {
@@ -15,6 +34,10 @@ resource "google_cloud_run_service" "data-processor" {
     spec {
       containers {
         image = var.container-image-uri
+        env {
+          name  = "DATA_PROCESSING_RESPONSE_TOPIC_ID"
+          value = "data-processing-response-topic"
+        }
       }
       service_account_name = google_service_account.data-processor.email
     }

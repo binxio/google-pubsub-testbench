@@ -13,6 +13,7 @@ module "pubsub" {
   source = "./pubsub"
 
   app-forwarder-email  = module.app-forwarder.email
+  app-forwarder-name   = module.app-forwarder.name
   data-processor-email = module.data-processor.email
   data-processor-url   = module.data-processor.url
 

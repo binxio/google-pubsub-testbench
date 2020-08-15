@@ -2,8 +2,8 @@ package main
 
 import (
 	"cloud.google.com/go/pubsub"
-	"encoding/json"
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -28,18 +28,18 @@ func handle(e error, w http.ResponseWriter, errorType string) {
 }
 
 func publish(w http.ResponseWriter, r *http.Request) {
-	ctx := context.Background()
 	switch method := r.Method; method{
 		case http.MethodPost:
-			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
-
-			topicName := os.Getenv("DATA_PROCESSING_TOPIC_ID")
-			log.Printf("topic: %s\n", topicName)
+			ctx := context.Background()
 			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
-			log.Printf("trying to publish: %s\n", msg.Text)
+
+			var msg MinimalPubSubMessage; err = json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
+			topicName := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC_ID")
+			log.Printf("trying to publish: [%s] to [%s]\n", msg.Text, topicName)
 			res := client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
+
 			serverID, err := res.Get(ctx); handle(err, w, "500")
-			log.Printf("result: %s\n", serverID)
+			log.Printf("result: [%s]\n", serverID)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 	}

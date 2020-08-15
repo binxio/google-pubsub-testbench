@@ -6,6 +6,10 @@ variable "app-forwarder-email" {
   type = string
 }
 
+variable "app-forwarder-name" {
+  type = string
+}
+
 variable "data-processor-email" {
   type = string
 }
