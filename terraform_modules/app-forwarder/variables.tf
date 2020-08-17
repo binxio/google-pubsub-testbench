@@ -1,7 +1,9 @@
+variable "project-id" {
+  type = string
+}
 
-
-variable "request-topic-name" {
-  default = "request-topic"
+variable "location" {
+  type = string
 }
 
 variable "instance-name" {
@@ -10,9 +12,4 @@ variable "instance-name" {
 
 variable "container-image-uri" {
   default = "gcr.io/speeltuin-teindevries/app-forwarder"
-  # default = "gcr.io/cloudrun/hello"
-}
-
-variable "location" {
-  type = string
 }

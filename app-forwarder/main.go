@@ -32,25 +32,23 @@ func publish(w http.ResponseWriter, r *http.Request) {
 			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
 
 			ctx := context.Background()
-			client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
+			projectID := os.Getenv("PROJECT_ID")
+			client, err := pubsub.NewClient(ctx, projectID); handle(err, w, "500")
 
-			topicName := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC_ID")
-			res := client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
+			data_processing_request_topic_id := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC_ID") + "-topic"
+			res := client.Topic(data_processing_request_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
 			_, err = res.Get(ctx); handle(err, w, "500")
 
-			log.Printf("published: [%s] to [%s]\n", msg.Text, topicName)
+			log.Printf("published: [%s] to [%s]\n", msg.Text, data_processing_request_topic_id)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 	}
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	address := os.Getenv("ADDRESS")
-
 	http.HandleFunc("/", publish)
 	log.Printf("start to listen port port %s\n", port)
-	err := http.ListenAndServe(address + ":" + port, nil)
+	err := http.ListenAndServe(":" + os.Getenv("PORT"), nil)
 	if err != nil {
 		log.Fatal(err)
 	}

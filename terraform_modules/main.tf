@@ -1,11 +1,13 @@
 module "app-forwarder" {
-  source   = "./app-forwarder"
-  location = var.location
+  source     = "./app-forwarder"
+  location   = var.location
+  project-id = var.project-id
 }
 
 module "data-processor" {
-  source   = "./data-processor"
-  location = var.location
+  source     = "./data-processor"
+  location   = var.location
+  project-id = var.project-id
 }
 
 # ! this way, pubsub will now depend on cloud-run. Make sure to prevent any future circular/spiral dependencies !

@@ -36,11 +36,7 @@ resource "google_cloud_run_service" "data-processor" {
         image = var.container-image-uri
         env {
           name  = "DATA_PROCESSING_RESPONSE_TOPIC_ID"
-          value = "data-processing-response-topic"
-        }
-        env {
-          name  = "ADDRESS"
-          value = ""
+          value = "data-processing-response"
         }
       }
       service_account_name = google_service_account.data-processor.email

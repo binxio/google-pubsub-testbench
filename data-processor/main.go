@@ -40,11 +40,12 @@ func process(w http.ResponseWriter, r *http.Request) {
 	message, err := base64.StdEncoding.DecodeString(body.Message.Data); handle(err, w, "400")
 	responseMessage := veryComplicatedOperation(string(message))
 
-	topicName := os.Getenv("DATA_PROCESSING_RESPONSE_TOPIC_ID")
+	projectID := os.Getenv("PROJECT_ID")
 	ctx := context.Background() // <- do this here, or cleaner at beginning?
-	client, err := pubsub.NewClient(ctx, "speeltuin-teindevries"); handle(err, w, "500")
+	client, err := pubsub.NewClient(ctx, projectID); handle(err, w, "500")
 
-	res := client.Topic(topicName).Publish(ctx, &pubsub.Message{Data: []byte(responseMessage)})
+	data_processing_response_topic_id := os.Getenv("DATA_PROCESSING_RESPONSE_TOPIC_ID") + "-topic"
+	res := client.Topic(data_processing_response_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(responseMessage)})
 	_, err = res.Get(ctx); handle(err, w, "500")
 	w.WriteHeader(http.StatusOK)
 
@@ -52,12 +53,9 @@ func process(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	address := os.Getenv("ADDRESS")
-
 	http.HandleFunc("/", process)
 	log.Printf("start to listen port port %s\n", port)
-	err := http.ListenAndServe(address + ":" + port, nil)
+	err := http.ListenAndServe(":" + os.Getenv("PORT"), nil)
 	if err != nil {
 		log.Fatal(err)
 	}

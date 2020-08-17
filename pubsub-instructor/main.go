@@ -15,20 +15,23 @@ func handle(e error) {
 func main() {
 
 	ctx := context.Background()
-	project := os.Getenv("PUBSUB_PROJECT_ID")
+	project := os.Getenv("PROJECT_ID")
 
 	client, err := pubsub.NewClient(ctx, project); handle(err)
 
-	request_topic, err := client.CreateTopic(ctx, "data-processing-request-topic"); handle(err)
+	data_processing_request_topic_id := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC_ID")
+	request_topic, err := client.CreateTopic(ctx, data_processing_request_topic_id + "-topic"); handle(err)
 	defer request_topic.Stop()
 
-	response_topic, err := client.CreateTopic(ctx, "data-processing-response-topic"); handle(err)
+	data_processing_response_topic_id := os.Getenv("DATA_PROCESSING_RESPONSE_TOPIC_ID")
+	response_topic, err := client.CreateTopic(ctx, data_processing_response_topic_id + "-topic"); handle(err)
 	defer response_topic.Stop()
 
-	_, err = client.CreateSubscription(ctx, "data-processing-request-subscription", pubsub.SubscriptionConfig{
+	data_processing_request_push_subscription_uri := os.Getenv("DATA_PROCESSING_REQUEST_PUSH_SUBSCRIPTION_URI")
+	_, err = client.CreateSubscription(ctx, data_processing_request_topic_id + "-subscription", pubsub.SubscriptionConfig{
 		Topic: request_topic,
 		PushConfig: pubsub.PushConfig{
-			Endpoint: "http://data-processor:8081/",
+			Endpoint: data_processing_request_push_subscription_uri,
 		},
 	})
 	handle(err)
