@@ -54,7 +54,7 @@ func process(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", process)
-	log.Printf("start to listen port port %s\n", port)
+	log.Printf("data-processor started listening")
 	err := http.ListenAndServe(":" + os.Getenv("PORT"), nil)
 	if err != nil {
 		log.Fatal(err)

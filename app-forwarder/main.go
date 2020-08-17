@@ -47,7 +47,7 @@ func publish(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", publish)
-	log.Printf("start to listen port port %s\n", port)
+	log.Printf("app-forwarder started listening")
 	err := http.ListenAndServe(":" + os.Getenv("PORT"), nil)
 	if err != nil {
 		log.Fatal(err)
