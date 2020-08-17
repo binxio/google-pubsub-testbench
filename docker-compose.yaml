@@ -1,27 +1,41 @@
 version: "3.3"
 services:
-  data-processor:
-    build:
-      context: data-processor
-    environment:
-      - PORT=8080
   app-forwarder:
     build:
       context: app-forwarder
     environment:
-      - PUBSUB_EMULATOR_HOST=pubsub:8085
-      - REQUEST_TOPIC_ID=request-topic
       - PORT=8080
+      - ADDRESS=0.0.0.0
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - DATA_PROCESSING_REQUEST_TOPIC_ID=data-processing-request-topic
     ports:
       - 8080:8080
-  publisher:
+  data-processor:
     build:
-      context: publisher
-    # ports:
-    #   - 8081:8080
+      context: data-processor
     environment:
+      - PORT=8081
+      - ADDRESS=0.0.0.0
       - PUBSUB_EMULATOR_HOST=pubsub:8085
-      - PUBSUB_PROJECT_ID=pubsub-demo
+      - DATA_PROCESSING_RESPONSE_TOPIC_ID=data-processing-response-topic
+    ports:
+      - 8081:8081
+
   pubsub:
     image: google/cloud-sdk:latest
     command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port", "0.0.0.0:8085"]
+    # command: bash -c "
+    #   gcloud beta emulators pubsub start --host-port 0.0.0.0:8085 &
+    #   sleep 10 &&
+    #   gcloud beta emulators pubsub env-init &&
+    #   gcloud pubsub topics create data-processing-request-topic"
+  pubsub-instructor:
+    build:
+      context: pubsub-instructor
+    depends_on:
+      - pubsub
+    environment:
+      - PUBSUB_PROJECT_ID=speeltuin-teindevries
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+    ports:
+      - 8085:8085

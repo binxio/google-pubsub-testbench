@@ -63,7 +63,7 @@ resource "google_pubsub_subscription" "data-processing-request-subscription" {
 #                                          #
 
 
-resource "google_pubsub_topic" "response-topic" {
+resource "google_pubsub_topic" "data-processing-response-topic" {
   name       = "data-processing-response-topic"
   project    = var.project-id
   depends_on = [google_project_service.pubsub-service]
@@ -72,26 +72,26 @@ resource "google_pubsub_topic" "response-topic" {
 # publishers #
 
 resource "google_pubsub_topic_iam_member" "response-publisher" {
-  member     = "serviceAccount:${var.data-processor-email}"
-  topic      = google_pubsub_topic.response-topic.id
-  role       = "roles/pubsub.publisher"
-  depends_on = [google_pubsub_topic.response-topic]
+  member = "serviceAccount:${var.data-processor-email}"
+  topic  = google_pubsub_topic.data-processing-response-topic.id
+  role   = "roles/pubsub.publisher"
+  # depends_on = [google_pubsub_topic.data-processing-response-topic]
 }
 
 # subscriptions and their subscribers #
 
-resource "google_pubsub_subscription" "response-subscription" {
-  name       = "data-processing-response-subscription"
-  topic      = google_pubsub_topic.response-topic.id
-  project    = var.project-id
-  depends_on = [google_pubsub_topic.response-topic]
+resource "google_pubsub_subscription" "data-processing-response-subscription" {
+  name    = "data-processing-response-subscription"
+  topic   = google_pubsub_topic.data-processing-response-topic.id
+  project = var.project-id
+  # depends_on = [google_pubsub_topic.response-topic]
 }
 
-resource "google_pubsub_subscription_iam_member" "response-subscriber" {
-  subscription = google_pubsub_subscription.response-subscription.name
+resource "google_pubsub_subscription_iam_member" "data-processing-response-subscriber" {
+  subscription = google_pubsub_subscription.data-processing-response-subscription.name
   role         = "roles/pubsub.subscriber"
   member       = "user:${var.user-account}"
-  depends_on   = [google_pubsub_subscription.response-subscription]
+  # depends_on   = [google_pubsub_subscription.data-processing-response-subscription]
 }
 
 

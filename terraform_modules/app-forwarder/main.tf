@@ -49,6 +49,10 @@ resource "google_cloud_run_service" "app-forwarder" {
           name  = "DATA_PROCESSING_REQUEST_TOPIC_ID"
           value = "data-processing-request-topic"
         }
+        env {
+          name  = "ADDRESS"
+          value = ""
+        }
       }
       service_account_name = google_service_account.app-forwarder.email
     }

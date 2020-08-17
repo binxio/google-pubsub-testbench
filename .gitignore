@@ -1,6 +1,5 @@
 *.terraform
-*.tfstate
-*.tfstate.backup
+*tfstate*
 *.iml
 *.BAK
 backup*
@@ -20,4 +19,5 @@ simple_go_server.go
 setup_project.sh
 terraform.env
 Makefile
-dev_trigger_build_and_deploy.sh
+commit_tag_push.sh
+build_and_deploy_docker_to_cloud_run.sh

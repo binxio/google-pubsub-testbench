@@ -1,20 +1,3 @@
-# FROM 		golang:1.14
-#
-# WORKDIR		/app
-# ADD		. /app
-#
-# # RUN apk add --no-cache ca-certificates
-#
-# RUN		CGO_ENABLED=0 GOOS=linux go build -ldflags '-extldflags "-static"' .
-#
-# FROM 		scratch
-#
-# ENTRYPOINT 	["/app-forwarder"]
-#
-# COPY --from=0	/app/app-forwarder /
-
-#####
-
 FROM golang:1.14 AS builder
 # Enable static compilation
 ENV CGO_ENABLED 0
