@@ -1,11 +1,41 @@
 ##### permissions #####
 
+# enable api
 resource "google_project_service" "run" {
   service            = "run.googleapis.com"
   disable_on_destroy = false
 }
 
 ##### ingress access #####
+
+# download allUsers policy to allow unrestriced access
+# TODO: restrict this
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+# allow unrestricted ingress
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  location = google_cloud_run_service.app-forwarder.location
+  project  = google_cloud_run_service.app-forwarder.project
+  service  = google_cloud_run_service.app-forwarder.name
+
+  policy_data = data.google_iam_policy.noauth.policy_data
+}
+
+##### internal egress #####
+
+# make service account for internal egress permissions in other modules
+resource "google_service_account" "app-forwarder" {
+  account_id   = var.instance-name
+  display_name = "App Forwarder Service Account"
+  description  = "App Forwarder Service Account"
+}
 
 #TODO why does below not work to give unrestricted access?
 
@@ -18,25 +48,10 @@ resource "google_project_service" "run" {
 #   depends_on = [google_cloud_run_service.app-forwarder]
 # }
 
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "noauth" {
-  location = google_cloud_run_service.app-forwarder.location
-  project  = google_cloud_run_service.app-forwarder.project
-  service  = google_cloud_run_service.app-forwarder.name
-
-  policy_data = data.google_iam_policy.noauth.policy_data
-}
 
 ##### instance #####
 
+# Cloud Run
 resource "google_cloud_run_service" "app-forwarder" {
   name     = var.instance-name
   location = var.location
@@ -45,6 +60,7 @@ resource "google_cloud_run_service" "app-forwarder" {
     spec {
       containers {
         image = var.container-image-uri
+        # pass information that is required to connect to pubsub
         env {
           name  = "DATA_PROCESSING_REQUEST_TOPIC_ID"
           value = "data-processing-request"
@@ -66,12 +82,4 @@ resource "google_cloud_run_service" "app-forwarder" {
   autogenerate_revision_name = true
 
   depends_on = [google_project_service.run, google_service_account.app-forwarder]
-}
-
-##### egress (service accounts) #####
-
-resource "google_service_account" "app-forwarder" {
-  account_id   = var.instance-name
-  display_name = "App Forwarder Service Account"
-  description  = "App Forwarder Service Account"
 }

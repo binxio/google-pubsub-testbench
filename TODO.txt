@@ -12,10 +12,13 @@ Functional
   add firewall to cloud run from specific IP addresses in env file (start with one). Currently no auth.
 
 Terraform
-  + separate terraform concerns into multiple files
-  connect resources (e.g. service account) via variables. Use output?
-  make it so that a new topic can easily be added, along with pubs and subs, by changing a variable
+  Set restricted ingress
+  Make terraform into a template
+  Separate .tf from .tfvars
 
+  + separate terraform concerns into multiple files
+  + connect resources (e.g. service account) via variables. Use output?
+  make it so that a new topic can easily be added, along with pubs and subs, by changing a variable
 
 
 
@@ -29,3 +32,5 @@ Makefile:
 
 Functional
   Why can't I destroy the pubsub api?
+
+Why define PORT into variable when it is fixed?
