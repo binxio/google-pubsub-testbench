@@ -5,10 +5,23 @@ resource "google_project_service" "pubsub-service" {
   disable_on_destroy = false
 }
 
+# service account with which to push subscriptions #
+
+# resource "google_service_account" "pubsub" {
+#   account_id   = "pubsub"
+#   display_name = "Pub/Sub Service Account"
+#   description  = "Pub/Sub Service Account"
+# }
+#
+# resource "google_service_account_iam_member" "admin-account-iam" {
+#   service_account_id = google_service_account.pubsub.name
+#   role               = "roles/run.invoker"
+#   member             = "serviceAccount:${google_service_account.pubsub.email}"
+# }
 
 
 
-#                                                          #
+
 #####          data processing request topic           #####
 #                                                          #
 
@@ -43,7 +56,6 @@ resource "google_pubsub_subscription" "data-processing-request-subscription" {
 
 
 
-#                                                          #
 #####          data processing response topic          #####
 #                                                          #
 

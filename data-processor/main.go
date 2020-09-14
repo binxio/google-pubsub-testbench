@@ -3,74 +3,74 @@ package main
 import (
 	"cloud.google.com/go/pubsub"
 	"context"
+	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"encoding/base64"
-	"errors"
 )
 
 // declare data location in JSON structure that is pushed by pubsub.
 // omitempty to generate error
 type PubSubMessage struct {
-        Message struct {
-                Data string `json:"data,omitempty"`
-        } `json:"message"`
+	Message struct {
+		Data string `json:"data,omitempty"`
+	} `json:"message"`
 }
 
-func handle(e error, w http.ResponseWriter, errorType string) {
-	// handle multiple errors
+func handle(e error, w http.ResponseWriter, httpResponseCode int) {
 	if e != nil {
-    switch errorType {
-	    case "400":
-	      http.Error(w, e.Error(), http.StatusBadRequest)
-			case "500":
-				http.Error(w, e.Error(), http.StatusInternalServerError)
+		http.Error(w, e.Error(), httpResponseCode)
+		if httpResponseCode >= 500 && httpResponseCode < 600 {
+			panic(e)
 		}
-		// always panic in case of error, during dev
-		panic(e)
 	}
 }
 
-func veryComplicatedOperation(s string) string {
+func transform(s string) string {
 	// for demonstration, perform simple operation
 	return strings.ToUpper(s)
 }
 
 func process(w http.ResponseWriter, r *http.Request) {
-	switch method := r.Method; method{
-		// accept only POST
-		case http.MethodPost:
-			// load context
-			ctx := context.Background()
-			projectID := os.Getenv("PROJECT_ID")
-			data_processing_response_topic_id := os.Getenv("DATA_PROCESSING_RESPONSE_TOPIC_ID") + "-topic"
-			
-			// decode JSON that is nested, pushed by pubsub and base64 to message
-			var body PubSubMessage; err := json.NewDecoder(r.Body).Decode(&body); handle(err, w, "400")
-			message, err := base64.StdEncoding.DecodeString(body.Message.Data); handle(err, w, "400")
+	switch method := r.Method; method {
+	// accept only POST
+	case http.MethodPost:
+		// load context
+		ctx := context.Background()
+		projectID := os.Getenv("PROJECT_ID")
+		data_processing_response_topic_id := os.Getenv("DATA_PROCESSING_RESPONSE_TOPIC")
 
-			// do some operation on the message
-			responseMessage := veryComplicatedOperation(string(message))
+		// decode JSON that is nested, pushed by pubsub and base64 to message
+		var body PubSubMessage
+		err := json.NewDecoder(r.Body).Decode(&body)
+		handle(err, w, http.StatusBadRequest)
+		message, err := base64.StdEncoding.DecodeString(body.Message.Data)
+		handle(err, w, http.StatusBadRequest)
 
-			// connect to pubsub service
-			client, err := pubsub.NewClient(ctx, projectID); handle(err, w, "500")
+		// do some operation on the message
+		responseMessage := transform(string(message))
 
-			// publish the processed message
-			res := client.Topic(data_processing_response_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(responseMessage)})
-			_, err = res.Get(ctx); handle(err, w, "500")
+		// connect to pubsub service
+		client, err := pubsub.NewClient(ctx, projectID)
+		handle(err, w, http.StatusInternalServerError)
 
-			// acknowledge initial request message
-			w.WriteHeader(http.StatusOK)
+		// publish the processed message
+		res := client.Topic(data_processing_response_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(responseMessage)})
+		_, err = res.Get(ctx)
+		handle(err, w, http.StatusInternalServerError)
 
-			// log
-			log.Printf("capitalized [%s] to\n[%s] and\npublished on [%s].\n", message, responseMessage, data_processing_response_topic_id)
+		// acknowledge initial request message
+		w.WriteHeader(http.StatusOK)
 
-		// if not POST:
-		default:
-			handle(errors.New("wrong request type"), w, "400")
+		// log
+		log.Printf("capitalized [%s] to\n[%s] and\npublished on [%s].\n", message, responseMessage, data_processing_response_topic_id)
+
+	// if not POST:
+	default:
+		handle(errors.New("wrong request type"), w, http.StatusBadRequest)
 	}
 }
 

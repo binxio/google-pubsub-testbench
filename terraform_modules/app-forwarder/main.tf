@@ -62,12 +62,12 @@ resource "google_cloud_run_service" "app-forwarder" {
         image = var.container-image-uri
         # pass information that is required to connect to pubsub
         env {
-          name  = "DATA_PROCESSING_REQUEST_TOPIC_ID"
-          value = "data-processing-request"
-        }
-        env {
           name  = "PROJECT_ID"
           value = var.project-id
+        }
+        env {
+          name  = "DATA_PROCESSING_REQUEST_TOPIC"
+          value = "data-processing-request-topic"
         }
       }
       service_account_name = google_service_account.app-forwarder.email

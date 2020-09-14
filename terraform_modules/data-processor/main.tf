@@ -50,12 +50,12 @@ resource "google_cloud_run_service" "data-processor" {
         image = var.container-image-uri
         # pass information that is required to connect to pubsub
         env {
-          name  = "DATA_PROCESSING_RESPONSE_TOPIC_ID"
-          value = "data-processing-response"
-        }
-        env {
           name  = "PROJECT_ID"
           value = var.project-id
+        }
+        env {
+          name  = "DATA_PROCESSING_RESPONSE_TOPIC"
+          value = "data-processing-response-topic"
         }
       }
       service_account_name = google_service_account.data-processor.email

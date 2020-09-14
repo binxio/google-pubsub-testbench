@@ -4,58 +4,60 @@ import (
 	"cloud.google.com/go/pubsub"
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
-	"errors"
 )
+
+// TODO
+// put one time setup in global variables (e.g. clients)
 
 type MinimalPubSubMessage struct {
 	Text string
 }
 
-func handle(e error, w http.ResponseWriter, errorType string) {
-	// handle multiple errors
+func handle(e error, w http.ResponseWriter, httpResponseCode int) {
 	if e != nil {
-    switch errorType {
-	    case "400":
-	      http.Error(w, e.Error(), http.StatusBadRequest)
-			case "500":
-				http.Error(w, e.Error(), http.StatusInternalServerError)
+		http.Error(w, e.Error(), httpResponseCode)
+		if httpResponseCode >= 500 && httpResponseCode < 600 {
+			panic(e)
 		}
-		// always panic in case of error, during dev
-		panic(e)
 	}
 }
 
 func publish(w http.ResponseWriter, r *http.Request) {
-	switch method := r.Method; method{
-		// accept only POST
-		case http.MethodPost:
-			// load context
-			ctx := context.Background()
-			projectID := os.Getenv("PROJECT_ID")
-			data_processing_request_topic_id := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC_ID") + "-topic"
+	switch method := r.Method; method {
+	// accept only POST
+	case http.MethodPost:
+		// load context
+		ctx := context.Background()
+		projectID := os.Getenv("PROJECT_ID")
+		data_processing_request_topic_id := os.Getenv("DATA_PROCESSING_REQUEST_TOPIC")
 
-			// decode simple JSON to a message
-			var msg MinimalPubSubMessage; err := json.NewDecoder(r.Body).Decode(&msg); handle(err, w, "400")
+		// decode simple JSON to a message
+		var msg MinimalPubSubMessage
+		err := json.NewDecoder(r.Body).Decode(&msg)
+		handle(err, w, http.StatusBadRequest)
 
-			// connect to pubsub service
-			client, err := pubsub.NewClient(ctx, projectID); handle(err, w, "500")
+		// connect to pubsub service
+		client, err := pubsub.NewClient(ctx, projectID)
+		handle(err, w, http.StatusInternalServerError)
 
-			// publish the message
-			res := client.Topic(data_processing_request_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
-			_, err = res.Get(ctx); handle(err, w, "500")
+		// publish the message
+		res := client.Topic(data_processing_request_topic_id).Publish(ctx, &pubsub.Message{Data: []byte(msg.Text)})
+		_, err = res.Get(ctx)
+		handle(err, w, http.StatusInternalServerError)
 
-			// respond positively
-			w.WriteHeader(http.StatusOK)
+		// respond positively
+		w.WriteHeader(http.StatusOK)
 
-			// log
-			log.Printf("published: [%s] to [%s]\n", msg.Text, data_processing_request_topic_id)
+		// log
+		log.Printf("published: [%s] to [%s]\n", msg.Text, data_processing_request_topic_id)
 
-		// if not POST:
-		default:
-			handle(errors.New("wrong request type"), w, "400")
+	// if not POST:
+	default:
+		handle(errors.New("wrong request type"), w, http.StatusBadRequest)
 	}
 }
 

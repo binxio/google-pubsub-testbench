@@ -5,9 +5,10 @@ x-pubsub-linked-subsystem: &pubsub-linked-subsystem
   environment:
     - PROJECT_ID=bogus # <- emulator requires valid, but not necessarily existing projectname
     - PUBSUB_EMULATOR_HOST=pubsub:8085
-    - DATA_PROCESSING_REQUEST_TOPIC_ID=data-processing-request
-    - DATA_PROCESSING_RESPONSE_TOPIC_ID=data-processing-response
+    - DATA_PROCESSING_REQUEST_TOPIC=data-processing-request-topic
+    - DATA_PROCESSING_REQUEST_SUBSCRIPTION=data-processing-request-subscription
     - DATA_PROCESSING_REQUEST_PUSH_SUBSCRIPTION_URI=http://data-processor:8080/
+    - DATA_PROCESSING_RESPONSE_TOPIC=data-processing-response-topic
 
 services: # Cloud Run ports are always 8080, so no variable necessary
   # emulates a GCP pubsub
@@ -23,9 +24,7 @@ services: # Cloud Run ports are always 8080, so no variable necessary
       - pubsub
 
   # publishes a message. For example:
-    # curl -X POST localhost:8080/ \
-    # -d '{"text": "test"}' \
-    # -H "Content-Type: application/json"
+  # curl -X POST localhost:8080/ -d '{"text": "dev"}' -H "Content-Type: application/json"
   app-forwarder:
     <<: *pubsub-linked-subsystem
     build:
