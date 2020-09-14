@@ -20,7 +20,7 @@ variable "data-processor-url" {
 
 # project #
 
-variable "user-account" {
+variable "user-account-for-pulling" {
   type = string
 }
 

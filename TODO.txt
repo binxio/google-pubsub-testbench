@@ -10,15 +10,13 @@ CICD
 
 Functional
   add firewall to cloud run from specific IP addresses in env file (start with one). Currently no auth.
+  add pull functionality to emulator
 
 Terraform
   Set restricted ingress
-  Make terraform into a template
-  Separate .tf from .tfvars
-
-  + separate terraform concerns into multiple files
-  + connect resources (e.g. service account) via variables. Use output?
   make it so that a new topic can easily be added, along with pubs and subs, by changing a variable
+  create gcr.io repo with terraform
+
 
 
 
@@ -29,8 +27,3 @@ Terraform
 
 Makefile:
   How do I prevent $$(...) from also executing the output/return. OR: How can I make $() work?
-
-Functional
-  Why can't I destroy the pubsub api?
-
-Why define PORT into variable when it is fixed?

@@ -1,26 +1,28 @@
-##### specify #####
-# variable "CREDENTIALS_KEY_PATH" {
-#   type = string
-# }
-
 ##### project #####
 
 variable "project-id" {
-  default = "speeltuin-teindevries"
+  type = string
 }
 
 variable "location" {
-  default = "europe-west4"
+  type = string
 }
 
-variable "user-account" {
-  default = "teindevries@binx.io"
+variable "user-account-for-pulling" {
+  type = string
 }
+
+variable "app-forwarder-container-image-uri" {
+  type = string
+}
+
+variable "data-processor-container-image-uri" {
+  type = string
+}
+
 
 ##### provider #####
 provider "google" {
-  # get this from env?
-  # credentials = var.CREDENTIALS_KEY_PATH
-  project = "speeltuin-teindevries"
+  project = var.project-id
   region  = var.location
 }

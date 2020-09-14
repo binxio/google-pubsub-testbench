@@ -80,9 +80,9 @@ resource "google_pubsub_subscription" "data-processing-response-subscription" {
   project = var.project-id
 }
 
-# allow the user-account to pull messages #
+# allow a user-account to pull messages #
 resource "google_pubsub_subscription_iam_member" "data-processing-response-subscriber" {
   subscription = google_pubsub_subscription.data-processing-response-subscription.name
   role         = "roles/pubsub.subscriber"
-  member       = "user:${var.user-account}"
+  member       = "user:${var.user-account-for-pulling}"
 }

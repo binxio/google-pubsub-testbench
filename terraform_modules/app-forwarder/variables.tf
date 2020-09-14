@@ -11,5 +11,5 @@ variable "instance-name" {
 }
 
 variable "container-image-uri" {
-  default = "gcr.io/speeltuin-teindevries/app-forwarder"
+  type = string #TODO: generalize by externalizing project-id (tfvars?)
 }
